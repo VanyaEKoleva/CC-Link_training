@@ -1,0 +1,1175 @@
+
+<h2 class="sr-only">CC-Link Field Basic Training Program for C Programmers — 8 sequential modules covering protocol fundamentals, frame structure, C implementation, and diagnostics.</h2>
+
+<style>
+  :root {
+    --accent: #0F6E56;
+    --accent-light: #E1F5EE;
+    --accent-mid: #1D9E75;
+    --warm: #BA7517;
+    --warn-light: #FAEEDA;
+    --code-bg: var(--color-background-secondary);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  .header {
+    padding: 1.5rem 1.5rem 1rem;
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .header-left { flex: 1; min-width: 200px; }
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: var(--accent-light);
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .header h1 {
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    line-height: 1.3;
+  }
+  .header p {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    margin-top: 4px;
+    line-height: 1.5;
+  }
+  .progress-summary {
+    text-align: right;
+    min-width: 120px;
+  }
+  .progress-summary .big { font-size: 28px; font-weight: 500; color: var(--accent); }
+  .progress-summary .sub { font-size: 12px; color: var(--color-text-secondary); }
+  .progress-bar-outer {
+    height: 4px; background: var(--color-border-tertiary);
+    border-radius: 2px; margin-top: 6px; overflow: hidden;
+  }
+  .progress-bar-inner {
+    height: 100%; background: var(--accent-mid);
+    border-radius: 2px; transition: width 0.4s ease;
+  }
+
+  .nav {
+    display: flex;
+    overflow-x: auto;
+    gap: 2px;
+    padding: 0.5rem 1rem;
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+    scrollbar-width: none;
+  }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav-btn {
+    flex-shrink: 0;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    border: none;
+    cursor: pointer;
+    background: transparent;
+    color: var(--color-text-secondary);
+    transition: all 0.15s;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .nav-btn:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
+  .nav-btn.active { background: var(--accent-light); color: var(--accent); font-weight: 500; }
+  .nav-btn.done .dot { background: var(--accent-mid); }
+  .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--color-border-secondary);
+    flex-shrink: 0;
+  }
+
+  .content { padding: 1.5rem; }
+
+  .module-header {
+    display: flex; align-items: flex-start; gap: 12px;
+    margin-bottom: 1.2rem;
+  }
+  .module-num {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: var(--accent-light); color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 500; flex-shrink: 0;
+  }
+  .module-meta { flex: 1; }
+  .module-title { font-size: 17px; font-weight: 500; color: var(--color-text-primary); }
+  .module-subtitle { font-size: 13px; color: var(--color-text-secondary); margin-top: 2px; }
+  .module-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 5px; }
+  .tag {
+    font-size: 11px; padding: 2px 8px;
+    border-radius: 10px; border: 0.5px solid var(--color-border-secondary);
+    color: var(--color-text-secondary);
+  }
+
+  .section { margin-bottom: 1.4rem; }
+  .section-title {
+    font-size: 13px; font-weight: 500; color: var(--color-text-secondary);
+    text-transform: uppercase; letter-spacing: 0.05em;
+    margin-bottom: 0.6rem;
+  }
+  .section p { font-size: 14px; color: var(--color-text-primary); line-height: 1.7; }
+
+  .objectives { list-style: none; }
+  .objectives li {
+    font-size: 14px; color: var(--color-text-primary);
+    padding: 6px 0; padding-left: 20px; position: relative; line-height: 1.5;
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+  }
+  .objectives li:last-child { border-bottom: none; }
+  .objectives li::before {
+    content: "→"; position: absolute; left: 0;
+    color: var(--accent-mid); font-size: 12px;
+  }
+
+  .code-block {
+    background: var(--code-bg);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: 8px;
+    padding: 1rem;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--color-text-primary);
+    overflow-x: auto;
+    white-space: pre;
+    margin-bottom: 0.8rem;
+  }
+  .code-label {
+    font-size: 11px; color: var(--color-text-secondary);
+    font-family: var(--font-sans);
+    margin-bottom: 4px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .copy-btn {
+    font-size: 11px; padding: 2px 8px;
+    border: 0.5px solid var(--color-border-secondary);
+    border-radius: 4px; cursor: pointer;
+    background: transparent; color: var(--color-text-secondary);
+    font-family: var(--font-sans);
+  }
+  .copy-btn:hover { background: var(--color-background-secondary); }
+
+  .info-card {
+    background: var(--accent-light);
+    border-left: 3px solid var(--accent-mid);
+    border-radius: 0 8px 8px 0;
+    padding: 0.8rem 1rem;
+    margin-bottom: 0.8rem;
+  }
+  .info-card p { font-size: 13px; color: var(--accent); line-height: 1.6; }
+  .warn-card {
+    background: var(--warn-light);
+    border-left: 3px solid var(--warm);
+    border-radius: 0 8px 8px 0;
+    padding: 0.8rem 1rem;
+    margin-bottom: 0.8rem;
+  }
+  .warn-card p { font-size: 13px; color: var(--warm); line-height: 1.6; }
+
+  .exercise {
+    border: 0.5px solid var(--color-border-secondary);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 0.8rem;
+  }
+  .exercise-header {
+    background: var(--color-background-secondary);
+    padding: 8px 12px;
+    font-size: 13px; font-weight: 500; color: var(--color-text-primary);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .ex-badge {
+    font-size: 10px; padding: 2px 7px;
+    border-radius: 10px; font-weight: 500;
+  }
+  .ex-badge.lab { background: #E6F1FB; color: #185FA5; }
+  .ex-badge.hw  { background: #FAEEDA; color: #854F0B; }
+  .exercise-body { padding: 10px 12px; font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; }
+
+  .frame-diagram {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    overflow-x: auto;
+    margin-bottom: 0.8rem;
+  }
+  .frame-row { display: flex; }
+  .frame-cell {
+    border: 0.5px solid var(--color-border-secondary);
+    padding: 4px 6px;
+    text-align: center;
+    min-width: 50px;
+    background: var(--color-background-secondary);
+    color: var(--color-text-primary);
+    font-size: 11px;
+  }
+  .frame-cell.accent { background: var(--accent-light); color: var(--accent); }
+  .frame-cell.warm   { background: var(--warn-light);   color: var(--warm); }
+  .frame-size { font-size: 10px; color: var(--color-text-secondary); text-align: center; margin-top: 2px; }
+
+  .footer {
+    padding: 1rem 1.5rem;
+    border-top: 0.5px solid var(--color-border-tertiary);
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 1rem; flex-wrap: wrap;
+  }
+  .footer-left { font-size: 12px; color: var(--color-text-secondary); }
+  .footer-btns { display: flex; gap: 8px; }
+  .btn {
+    font-size: 13px; padding: 7px 16px;
+    border-radius: 6px; cursor: pointer;
+    border: 0.5px solid var(--color-border-secondary);
+    background: transparent; color: var(--color-text-primary);
+    transition: all 0.15s;
+    font-family: var(--font-sans);
+  }
+  .btn:hover { background: var(--color-background-secondary); }
+  .btn.primary {
+    background: var(--accent);
+    color: #fff; border-color: var(--accent);
+  }
+  .btn.primary:hover { background: var(--accent-mid); border-color: var(--accent-mid); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .checklist { list-style: none; }
+  .checklist li {
+    display: flex; gap: 8px; align-items: flex-start;
+    padding: 5px 0;
+    font-size: 13px; color: var(--color-text-primary);
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .chk-box {
+    width: 14px; height: 14px; border-radius: 3px;
+    border: 0.5px solid var(--color-border-secondary);
+    cursor: pointer; flex-shrink: 0; margin-top: 2px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; color: var(--accent);
+    transition: all 0.15s;
+    background: transparent;
+  }
+  .chk-box.checked { background: var(--accent-light); border-color: var(--accent); }
+
+  .ref-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; }
+  .ref-card {
+    background: var(--color-background-secondary);
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    border: 0.5px solid var(--color-border-tertiary);
+  }
+  .ref-card strong { display: block; font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 3px; }
+</style>
+
+<div class="header">
+  <div class="header-left">
+    <div class="badge">CC-Link Field Basic · C Programming</div>
+    <h1>Embedded Systems Training Program</h1>
+    <p>Sequential 8-module curriculum for junior developers — from protocol fundamentals to production-ready implementation.</p>
+  </div>
+  <div class="progress-summary">
+    <div class="big" id="pct">0%</div>
+    <div class="sub">completed</div>
+    <div class="progress-bar-outer"><div class="progress-bar-inner" id="prog-bar" style="width:0%"></div></div>
+  </div>
+</div>
+
+<div class="nav" id="nav-bar"></div>
+<div class="content" id="content-area"></div>
+<div class="footer">
+  <div class="footer-left" id="footer-info">Module 1 of 8 · ~2 hours</div>
+  <div class="footer-btns">
+    <button class="btn" id="btn-prev" onclick="navigate(-1)">← Previous</button>
+    <button class="btn primary" id="btn-next" onclick="navigate(1)">Next module →</button>
+  </div>
+</div>
+
+<script>
+const modules = [
+  {
+    id: 1,
+    title: "Introduction to CC-Link Field Basic",
+    subtitle: "Protocol history, positioning, and architecture overview",
+    duration: "2h",
+    tags: ["theory", "architecture", "standards"],
+    content: `
+<div class="section">
+  <div class="section-title">Learning objectives</div>
+  <ul class="objectives">
+    <li>Explain the CC-Link protocol family hierarchy and where CC-Link Field Basic fits</li>
+    <li>Describe the master/slave network topology and node addressing model</li>
+    <li>Identify the OSI layers relevant to CC-Link Field Basic implementation</li>
+    <li>List the four cyclic data types: RX, RY, RWr, RWw</li>
+    <li>Set up a CC-Link Field Basic simulation environment on Linux</li>
+  </ul>
+</div>
+
+<div class="section">
+  <div class="section-title">Protocol overview</div>
+  <p>CC-Link Field Basic (CCIEF-B) is an Ethernet-based open field network protocol standardized by the CC-Link Partner Association (CLPA). It operates on standard 100BASE-TX or 1000BASE-T Ethernet hardware, making it accessible without proprietary physical-layer hardware. CCIEF-B targets applications that require deterministic cyclic communication with up to 64 slave devices per master, supporting both bit-level (RX/RY) and word-level (RWr/RWw) data exchange.</p>
+</div>
+
+<div class="section">
+  <div class="section-title">Network model at a glance</div>
+  <div class="frame-diagram">
+    <div class="frame-row">
+      <div class="frame-cell accent" style="min-width:120px">Master station</div>
+      <div class="frame-cell" style="min-width:80px">→ cyclic →</div>
+      <div class="frame-cell" style="min-width:80px">Slave 1</div>
+      <div class="frame-cell" style="min-width:80px">Slave 2</div>
+      <div class="frame-cell" style="min-width:80px">... Slave 64</div>
+    </div>
+    <div class="frame-row" style="margin-top:4px">
+      <div class="frame-cell accent" style="min-width:120px">Data types</div>
+      <div class="frame-cell warm" style="min-width:80px">RX bits</div>
+      <div class="frame-cell warm" style="min-width:80px">RY bits</div>
+      <div class="frame-cell warm" style="min-width:80px">RWr words</div>
+      <div class="frame-cell warm" style="min-width:80px">RWw words</div>
+    </div>
+  </div>
+</div>
+
+<div class="info-card">
+  <p><strong>Key insight:</strong> CCIEF-B uses UDP/IP as its transport, meaning you implement it in user-space C code using standard POSIX sockets — no kernel driver required for prototyping.</p>
+</div>
+
+<div class="section">
+  <div class="section-title">Lab setup checklist</div>
+  <ul class="checklist" id="cl-1"></ul>
+</div>
+
+<div class="section">
+  <div class="section-title">Quick reference</div>
+  <div class="ref-grid">
+    <div class="ref-card"><strong>Max slaves</strong>64 per master group</div>
+    <div class="ref-card"><strong>Transport</strong>UDP/IP, port 61450</div>
+    <div class="ref-card"><strong>Cyclic period</strong>1 – 1000 ms (configurable)</div>
+    <div class="ref-card"><strong>RX/RY bits</strong>up to 2048 bits per slave</div>
+    <div class="ref-card"><strong>RWr/RWw</strong>up to 512 words per slave</div>
+    <div class="ref-card"><strong>Spec version</strong>CLPA CCIEF-B v1.10</div>
+  </div>
+</div>
+
+<div class="exercise">
+  <div class="exercise-header"><span class="ex-badge lab">Lab 1.1</span>Socket smoke-test</div>
+  <div class="exercise-body">Open UDP socket on port 61450, bind to your Ethernet interface, and print every received datagram's source IP and length. Capture with Wireshark to verify. No CC-Link messages yet — just confirming your network stack is ready.</div>
+</div>
+<div class="exercise">
+  <div class="exercise-header"><span class="ex-badge hw">Assignment 1</span>Architecture diagram</div>
+  <div class="exercise-body">Draw a block diagram showing one master, four slaves, and label all four cyclic data types with direction arrows (master-to-slave vs slave-to-master). Include the UDP port and Ethernet layer. Submit as a hand-drawn or digital diagram.</div>
+</div>
+    `,
+    checklist: [
+      "Linux machine with GCC 9+ installed",
+      "Wireshark installed and capture permissions set (sudo setcap cap_net_raw+ep /usr/bin/dumpcap)",
+      "CLPA CC-Link Field Basic specification PDF obtained from clpa-e.com",
+      "Network interface with known IP on an isolated VLAN or loopback alias",
+      "Text editor with C syntax highlighting configured"
+    ]
+  },
+  {
+    id: 2,
+    title: "Frame Structure and Protocol Data Units",
+    subtitle: "Byte-by-byte breakdown of CCIEF-B packets",
+    duration: "3h",
+    tags: ["frames", "PDU", "binary", "C structs"],
+    content: `
+<div class="section">
+  <div class="section-title">Learning objectives</div>
+  <ul class="objectives">
+    <li>Parse the CCIEF-B UDP payload header field-by-field</li>
+    <li>Map protocol fields to C struct members with correct types and alignment</li>
+    <li>Implement packet serialization and deserialization without UB</li>
+    <li>Explain the purpose of the sequence number and error code fields</li>
+    <li>Handle little-endian byte order (CCIEF-B is LE throughout)</li>
+  </ul>
+</div>
+
+<div class="section">
+  <div class="section-title">Cyclic request frame layout</div>
+  <div class="frame-diagram">
+    <div class="frame-row">
+      <div class="frame-cell accent">Protocol ID<br><span class="frame-size">4 bytes</span></div>
+      <div class="frame-cell accent">Reserved<br><span class="frame-size">2 bytes</span></div>
+      <div class="frame-cell warm">Seq No.<br><span class="frame-size">2 bytes</span></div>
+      <div class="frame-cell">Length<br><span class="frame-size">2 bytes</span></div>
+      <div class="frame-cell">Command<br><span class="frame-size">2 bytes</span></div>
+      <div class="frame-cell">Sub-cmd<br><span class="frame-size">2 bytes</span></div>
+      <div class="frame-cell">Data...<br><span class="frame-size">variable</span></div>
+    </div>
+  </div>
+  <p style="font-size:13px;color:var(--color-text-secondary);margin-top:6px">Protocol ID: <code style="font-family:var(--font-mono);font-size:12px">0x4343 0x4946</code> ("CCIF"). All multi-byte fields are little-endian.</p>
+</div>
+
+<div class="section">
+  <div class="section-title">C struct definition</div>
+  <div class="code-label">
+    <span>ccief_b.h — header structures</span>
+    <button class="copy-btn" onclick="copyCode(this)">copy</button>
+  </div>
+  <div class="code-block">/* Always compile with -std=c11 or later */
+#include &lt;stdint.h&gt;
+#include &lt;stddef.h&gt;
+
+#define CCIEF_B_PROTOCOL_ID  0x46494343UL  /* "CCIF" LE */
+#define CCIEF_B_UDP_PORT     61450
+
+/* WARNING: Never cast a raw buffer to this struct directly.
+ * Always use memcpy() to avoid strict-aliasing UB and
+ * unaligned access faults on ARM targets.             */
+typedef struct {
+    uint32_t protocol_id;   /* must equal CCIEF_B_PROTOCOL_ID */
+    uint16_t reserved;      /* set to 0x0000                  */
+    uint16_t sequence_no;   /* incremented by master each cycle */
+    uint16_t length;        /* byte count of data[] field      */
+    uint16_t command;       /* 0x0730 = cyclic uplink req      */
+    uint16_t sub_command;   /* 0x0000 for standard cyclic      */
+    uint8_t  data[];        /* flexible array member (C99+)    */
+} ccief_b_header_t;
+
+#define CCIEF_B_HDR_SIZE  offsetof(ccief_b_header_t, data)
+
+/* Cyclic data area positions within data[] */
+#define RX_OFFSET(slave_no)   ((slave_no) * 8)
+#define RWW_OFFSET(slave_no)  (512 + (slave_no) * 128)
+</div>
+</div>
+
+<div class="section">
+  <div class="section-title">Safe deserialization pattern</div>
+  <div class="code-label">
+    <span>parse.c — memcpy-based deserialization</span>
+    <button class="copy-btn" onclick="copyCode(this)">copy</button>
+  </div>
+  <div class="code-block">/* Read a uint16_t from a raw byte buffer (safe, handles alignment) */
+static inline uint16_t read_le16(const uint8_t *buf) {
+    uint16_t val;
+    memcpy(&val, buf, sizeof(val));
+    /* host is assumed little-endian (x86/ARM); add bswap if big-endian */
+    return val;
+}
+
+int ccief_b_parse_header(const uint8_t *buf, size_t len,
+                         ccief_b_header_t *out) {
+    if (len &lt; CCIEF_B_HDR_SIZE) return -1; /* truncated */
+
+    uint32_t pid;
+    memcpy(&pid, buf, 4);
+    if (pid != CCIEF_B_PROTOCOL_ID) return -2; /* not CCIEF-B */
+
+    memcpy(&out->reserved,    buf + 4, 2);
+    memcpy(&out->sequence_no, buf + 6, 2);
+    memcpy(&out->length,      buf + 8, 2);
+    memcpy(&out->command,     buf + 10, 2);
+    memcpy(&out->sub_command, buf + 12, 2);
+    out->protocol_id = pid;
+    return 0;
+}
+</div>
+</div>
+
+<div class="warn-card">
+  <p><strong>Common mistake:</strong> Casting <code style="font-family:var(--font-mono)">uint8_t *buf</code> directly to a struct pointer is undefined behavior in C due to strict aliasing rules and may cause bus errors on non-x86 targets. Always use <code style="font-family:var(--font-mono)">memcpy()</code>.</p>
+</div>
+
+<div class="exercise">
+  <div class="exercise-header"><span class="ex-badge lab">Lab 2.1</span>Hex dump parser</div>
+  <div class="exercise-body">Write a command-line tool that reads a raw CCIEF-B UDP payload from a file (provided as a hex string) and prints each header field with its byte offset, hex value, and decoded meaning. Verify against the captured Wireshark frames from Lab 1.1.</div>
+</div>
+<div class="exercise">
+  <div class="exercise-header"><span class="ex-badge hw">Assignment 2</span>Serialization round-trip test</div>
+  <div class="exercise-body">Implement both <code style="font-family:var(--font-mono);font-size:12px">ccief_b_serialize()</code> and <code style="font-family:var(--font-mono);font-size:12px">ccief_b_parse_header()</code>. Write a unit test that serializes a known header, then parses the result, and asserts all fields match. Test with sequence numbers 0, 0xFFFF, and 1 (wrap-around).</div>
+</div>
+    `
+  },
+  {
+    id: 3,
+    title: "Cyclic Communication Fundamentals",
+    subtitle: "Master/slave roles, timing, and the communication cycle",
+    duration: "3h",
+    tags: ["cyclic", "timing", "state machine", "POSIX"],
+    content: `
+<div class="section">
+  <div class="section-title">Learning objectives</div>
+  <ul class="objectives">
+    <li>Implement a periodic timer using POSIX timerfd or clock_nanosleep</li>
+    <li>Build the four-state slave communication state machine</li>
+    <li>Distinguish and correctly handle the four cyclic data types</li>
+    <li>Calculate link cycle time from network parameters</li>
+    <li>Detect and respond to timeout conditions per the specification</li>
+  </ul>
+</div>
+
+<div class="section">
+  <div class="section-title">Slave state machine</div>
+  <div class="frame-diagram">
+    <div class="frame-row">
+      <div class="frame-cell" style="min-width:100px">DISCONNECTED</div>
+      <div class="frame-cell" style="min-width:60px;background:transparent;border:none">→ connect req →</div>
+      <div class="frame-cell accent" style="min-width:100px">CONNECTING</div>
+      <div class="frame-cell" style="min-width:60px;background:transparent;border:none">→ cyclic req →</div>
+      <div class="frame-cell accent" style="min-width:100px">CYCLIC_RUN</div>
+    </div>
+    <div class="frame-row" style="margin-top:4px">
+      <div class="frame-cell warm" style="min-width:322px">← timeout or error — any state resets to DISCONNECTED</div>
+      <div class="frame-cell" style="min-width:100px;opacity:0.3">CYCLIC_RUN</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Periodic timer (timerfd approach)</div>
+  <div class="code-label">
+    <span>timer.c — POSIX timerfd cyclic trigger</span>
+    <button class="copy-btn" onclick="copyCode(this)">copy</button>
+  </div>
+  <div class="code-block">#include &lt;sys/timerfd.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;stdint.h&gt;
+#include &lt;string.h&gt;
+#include &lt;time.h&gt;
+
+/* Create a periodic timer firing every period_ms milliseconds.
+ * Returns fd on success, -1 on failure.                        */
+int create_cyclic_timer(unsigned int period_ms) {
+    int fd = timerfd_create(CLOCK_MONOTONIC, TFD_NONBLOCK | TFD_CLOEXEC);
+    if (fd &lt; 0) return -1;
+
+    struct itimerspec ts;
+    memset(&ts, 0, sizeof(ts));
+    ts.it_interval.tv_sec  = period_ms / 1000;
+    ts.it_interval.tv_nsec = (period_ms % 1000) * 1000000L;
+    ts.it_value = ts.it_interval;  /* arm immediately */
+
+    if (timerfd_settime(fd, 0, &ts, NULL) &lt; 0) {
+        close(fd); return -1;
+    }
+    return fd;
+}
+
+/* Call in the main loop: returns number of missed ticks (ideally 1) */
+uint64_t wait_for_tick(int timer_fd) {
+    uint64_t expirations;
+    read(timer_fd, &expirations, sizeof(expirations));
+    return expirations;
+}
+</div>
+</div>
+
+<div class="section">
+  <div class="section-title">Data type mapping</div>
+  <div class="ref-grid">
+    <div class="ref-card"><strong>RX (input bits)</strong>Slave → Master. Sensor states, digital inputs. Bit-addressable.</div>
+    <div class="ref-card"><strong>RY (output bits)</strong>Master → Slave. Actuator commands, digital outputs. Bit-addressable.</div>
+    <div class="ref-card"><strong>RWr (input words)</strong>Slave → Master. Analog readings, counters. 16-bit words.</div>
+    <div class="ref-card"><strong>RWw (output words)</strong>Master → Slave. Setpoints, parameters. 16-bit words.</div>
+  </div>
+</div>
+
+<div class="info-card">
+  <p><strong>Timing rule:</strong> The slave must respond within the master's configured timeout (typically 500 ms). If the master misses 3 consecutive cyclic responses from a slave, it marks that slave as disconnected and zeroes its RX/RWr data.</p>
+</div>
+
+<div class="exercise">
+  <div class="exercise-header"><span class="ex-badge lab">Lab 3.1</span>Loopback cyclic ping</div>
+  <div class="exercise-body">Implement a minimal master and slave on the same machine using two UDP sockets (different ports). Master sends cyclic requests every 10 ms. Slave echoes the sequence number back in the response. Measure round-trip jitter with clock_gettime and confirm it stays below 2 ms.</div>
+</div>
+<div class="exercise">
+  <div class="exercise-header"><span class="ex-badge hw">Assignment 3</span>State machine implementation</div>
+  <div class="exercise-body">Implement the slave state machine as a C enum + switch-case dispatcher. Handle all four states and the timeout event. Write a test harness that injects out-of-order packets and verifies the machine transitions correctly. Document which transitions the spec mandates vs which are implementation choices.</div>
+</div>
+    `
+  },
+  {
+    id: 4,
+    title: "C Implementation: Master Station",
+    subtitle: "Building a compliant master from scratch",
+    duration: "5h",
+    tags: ["C code", "master", "sockets", "select"],
+    content: `
+<div class="section">
+  <div class="section-title">Learning objectives</div>
+  <ul class="objectives">
+    <li>Initialize and manage a raw UDP socket for CCIEF-B multicast or unicast</li>
+    <li>Build the cyclic request frame for a configured set of slaves</li>
+    <li>Implement the receive loop with select() and timeout handling</li>
+    <li>Maintain per-slave connection state and respond to link errors</li>
+    <li>Expose a simple API for the application layer to read/write process data</li>
+  </ul>
+</div>
+
+<div class="section">
+  <div class="section-title">Master architecture</div>
+  <div class="ref-grid">
+    <div class="ref-card"><strong>ccief_master_init()</strong>Bind socket, configure slaves, start timer</div>
+    <div class="ref-card"><strong>ccief_master_run_cycle()</strong>Called on every timer tick; sends requests and collects responses</div>
+    <div class="ref-card"><strong>ccief_master_read_rx()</strong>Read a slave's RX bit from the process image</div>
+    <div class="ref-card"><strong>ccief_master_write_ry()</strong>Write a RY bit to the process image (sent next cycle)</div>
+    <div class="ref-card"><strong>ccief_master_read_rwr()</strong>Read a RWr word from the process image</div>
+    <div class="ref-card"><strong>ccief_master_write_rww()</strong>Write a RWw word to the process image</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Process image and socket setup</div>
+  <div class="code-label">
+    <span>master.c — core data structures</span>
+    <button class="copy-btn" onclick="copyCode(this)">copy</button>
+  </div>
+  <div class="code-block">#include &lt;stdint.h&gt;
+#include &lt;stdbool.h&gt;
+#include &lt;string.h&gt;
+#include &lt;sys/socket.h&gt;
+#include &lt;netinet/in.h&gt;
+#include &lt;arpa/inet.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;errno.h&gt;
+
+#define MAX_SLAVES        64
+#define RX_BYTES_PER_SLAVE 8    /* 64 RX bits = 8 bytes  */
+#define RWR_WORDS_PER_SLAVE 16  /* 16 RWr words          */
+
+typedef enum {
+    SLAVE_DISCONNECTED,
+    SLAVE_CONNECTING,
+    SLAVE_CYCLIC_RUN,
+} slave_state_t;
+
+typedef struct {
+    uint32_t       ip_addr;       /* network byte order        */
+    slave_state_t  state;
+    uint16_t       timeout_count; /* missed responses          */
+    uint8_t        rx[RX_BYTES_PER_SLAVE];
+    uint8_t        ry[RX_BYTES_PER_SLAVE];
+    uint16_t       rwr[RWR_WORDS_PER_SLAVE];
+    uint16_t       rww[RWR_WORDS_PER_SLAVE];
+} slave_ctx_t;
+
+typedef struct {
+    int          sockfd;
+    uint16_t     seq_no;
+    int          slave_count;
+    slave_ctx_t  slaves[MAX_SLAVES];
+    int          timer_fd;
+} master_ctx_t;
+
+int ccief_master_init(master_ctx_t *ctx, const char *bind_ip,
+                      int slave_count) {
+    memset(ctx, 0, sizeof(*ctx));
+    ctx->slave_count = slave_count;
+
+    ctx->sockfd = socket(AF_INET, SOCK_DGRAM, 0);
+    if (ctx->sockfd &lt; 0) return -1;
+
+    int opt = 1;
+    setsockopt(ctx->sockfd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+
+    struct sockaddr_in addr = {
+        .sin_family = AF_INET,
+        .sin_port   = htons(CCIEF_B_UDP_PORT),
+        .sin_addr.s_addr = inet_addr(bind_ip),
+    };
+    if (bind(ctx->sockfd, (struct sockaddr *)&addr, sizeof(addr)) &lt; 0) {
+        close(ctx->sockfd); return -2;
+    }
+    ctx->timer_fd = create_cyclic_timer(10); /* 10 ms cycle */
+    return ctx->timer_fd &lt; 0 ? -3 : 0;
+}
+</div>
+</div>
+
+<div class="warn-card">
+  <p><strong>Thread safety:</strong> The process image (rx[], ry[], rwr[], rww[]) is shared between the cyclic thread and the application thread. Use <code style="font-family:var(--font-mono)">atomic_uint16_t</code> for word data or a mutex to prevent torn reads.</p>
+</div>
+
+<div class="exercise">
+  <div class="exercise-header"><span class="ex-badge lab">Lab 4.1</span>Full master implementation</div>
+  <div class="exercise-body">Complete the master by implementing <code style="font-family:var(--font-mono);font-size:12px">ccief_master_run_cycle()</code>: build and send the cyclic request, then use <code style="font-family:var(--font-mono);font-size:12px">select()</code> with a 5 ms timeout to receive responses. Update each slave's process image and connection counter. Test with the loopback slave from Lab 3.1.</div>
+</div>
+<div class="exercise">
+  <div class="exercise-header"><span class="ex-badge hw">Assignment 4</span>Slave timeout handling</div>
+  <div class="exercise-body">Extend the master to: (1) increment a timeout counter when a slave does not respond, (2) mark the slave DISCONNECTED after 3 consecutive misses, and (3) zero its RX/RWr data upon disconnection. Log all state transitions with a timestamp. Simulate timeouts by adding an artificial 50% packet drop in your test harness.</div>
+</div>
+    `
+  },
+  {
+    id: 5,
+    title: "C Implementation: Slave Station",
+    subtitle: "Implementing a compliant slave device in C",
+    duration: "4h",
+    tags: ["C code", "slave", "response", "process data"],
+    content: `
+<div class="section">
+  <div class="section-title">Learning objectives</div>
+  <ul class="objectives">
+    <li>Parse incoming cyclic request frames and extract process data for the slave's node</li>
+    <li>Build and transmit a well-formed cyclic response frame</li>
+    <li>Implement the slave-side connection and disconnection procedures</li>
+    <li>Integrate with a simulated I/O device (GPIO stub or hardware abstraction layer)</li>
+    <li>Handle unsolicited disconnect notifications from the master</li>
+  </ul>
+</div>
+
+<div class="section">
+  <div class="section-title">Slave response frame layout</div>
+  <div class="frame-diagram">
+    <div class="frame-row">
+      <div class="frame-cell accent">Protocol ID<br><span class="frame-size">4 B</span></div>
+      <div class="frame-cell accent">Reserved<br><span class="frame-size">2 B</span></div>
+      <div class="frame-cell warm">Seq No.<br><span class="frame-size">2 B</span></div>
+      <div class="frame-cell">Length<br><span class="frame-size">2 B</span></div>
+      <div class="frame-cell">Command<br><span class="frame-size">2 B</span></div>
+      <div class="frame-cell">Error Code<br><span class="frame-size">2 B</span></div>
+      <div class="frame-cell">RX data<br><span class="frame-size">8 B</span></div>
+      <div class="frame-cell">RWr data<br><span class="frame-size">32 B</span></div>
+    </div>
+  </div>
+  <p style="font-size:13px;color:var(--color-text-secondary);margin-top:6px">Error code 0x0000 = normal. The sequence number in the response must mirror the request exactly.</p>
+</div>
+
+<div class="section">
+  <div class="section-title">Slave response builder</div>
+  <div class="code-label">
+    <span>slave.c — build and send cyclic response</span>
+    <button class="copy-btn" onclick="copyCode(this)">copy</button>
+  </div>
+  <div class="code-block">typedef struct {
+    int         sockfd;
+    uint8_t     node_number;     /* 1 – 64, assigned by master config */
+    uint8_t     rx_data[8];      /* sensor inputs to report           */
+    uint16_t    rwr_data[16];    /* analog inputs to report           */
+    uint8_t     ry_data[8];      /* actuator outputs from master      */
+    uint16_t    rww_data[16];    /* setpoints from master             */
+    slave_state_t state;
+} slave_ctx_t;
+
+/* Build response into buf[]; returns total frame length.
+ * seq_no must be copied verbatim from the request.      */
+size_t build_cyclic_response(slave_ctx_t *ctx, uint16_t seq_no,
+                              uint16_t error_code,
+                              uint8_t *buf, size_t buf_size) {
+    size_t total = CCIEF_B_HDR_SIZE + 8 + 32;  /* hdr + rx + rwr */
+    if (buf_size &lt; total) return 0;
+
+    uint32_t pid = CCIEF_B_PROTOCOL_ID;
+    memcpy(buf,      &pid,        4);
+    memset(buf + 4,  0,           2);    /* reserved    */
+    memcpy(buf + 6,  &seq_no,     2);
+    uint16_t len = (uint16_t)(8 + 32);
+    memcpy(buf + 8,  &len,        2);
+    uint16_t cmd = 0x0730;
+    memcpy(buf + 10, &cmd,        2);
+    memcpy(buf + 12, &error_code, 2);
+
+    /* Process data: sample hardware abstraction layer */
+    hal_read_rx(ctx->rx_data, 8);   /* fill from GPIO etc. */
+    memcpy(buf + CCIEF_B_HDR_SIZE,      ctx->rx_data,  8);
+    memcpy(buf + CCIEF_B_HDR_SIZE + 8,  ctx->rwr_data, 32);
+
+    return total;
+}
+</div>
+</div>
+
+<div class="info-card">
+  <p><strong>Spec requirement:</strong> The slave must transmit its response within 500 µs of receiving a valid cyclic request. On Linux, you will need SCHED_FIFO or SCHED_RR real-time scheduling policy and CPU affinity to reliably achieve this. On bare-metal embedded targets, disable all interrupts during response transmission.</p>
+</div>
+
+<div class="exercise">
+  <div class="exercise-header"><span class="ex-badge lab">Lab 5.1</span>GPIO stub integration</div>
+  <div class="exercise-body">Implement a <code style="font-family:var(--font-mono);font-size:12px">hal.c</code> that simulates 8 digital inputs (toggled by key presses in a separate thread) and 2 analog channels (sine waves). Connect to your slave process image and verify the master's process image reflects the simulated hardware state within one cycle.</div>
+</div>
+<div class="exercise">
+  <div class="exercise-header"><span class="ex-badge hw">Assignment 5</span>Slave reconnection</div>
+  <div class="exercise-body">Implement the slave's reconnection procedure: after detecting no request for 3× the configured cycle time, reset to DISCONNECTED, zero all output data, and attempt to re-establish the link when requests resume. Document the exact byte sequence exchanged during reconnection per the spec.</div>
+</div>
+    `
+  },
+  {
+    id: 6,
+    title: "Error Handling and Robustness",
+    subtitle: "Building production-quality resilience",
+    duration: "4h",
+    tags: ["errors", "CRC", "watchdog", "defensive C"],
+    content: `
+<div class="section">
+  <div class="section-title">Learning objectives</div>
+  <ul class="objectives">
+    <li>Validate all incoming frames before processing (length, protocol ID, command)</li>
+    <li>Implement and verify the application-level CRC check for data integrity</li>
+    <li>Design a watchdog timer that resets the communication stack on deadlock</li>
+    <li>Handle all error return codes defined in the CCIEF-B specification</li>
+    <li>Write defensive C that cannot be exploited via malformed packets</li>
+  </ul>
+</div>
+
+<div class="section">
+  <div class="section-title">Error code reference</div>
+  <div class="ref-grid">
+    <div class="ref-card"><strong>0x0000</strong>Normal — no error</div>
+    <div class="ref-card"><strong>0x0801</strong>Other master is operating</div>
+    <div class="ref-card"><strong>0x0802</strong>Slave station number mismatch</div>
+    <div class="ref-card"><strong>0x0803</strong>Port number mismatch</div>
+    <div class="ref-card"><strong>0x0900</strong>Cyclic data size error</div>
+    <div class="ref-card"><strong>0xFF00</strong>Other (implementation-defined)</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Frame validation</div>
+  <div class="code-label">
+    <span>validate.c — defensive frame checker</span>
+    <button class="copy-btn" onclick="copyCode(this)">copy</button>
+  </div>
+  <div class="code-block">typedef enum {
+    CCIEF_OK         = 0,
+    CCIEF_ERR_SHORT  = -1,  /* frame too small            */
+    CCIEF_ERR_PID    = -2,  /* wrong protocol identifier  */
+    CCIEF_ERR_LEN    = -3,  /* length field mismatch      */
+    CCIEF_ERR_CMD    = -4,  /* unrecognised command        */
+} ccief_err_t;
+
+ccief_err_t ccief_b_validate(const uint8_t *buf, size_t recv_len) {
+    if (recv_len &lt; CCIEF_B_HDR_SIZE)
+        return CCIEF_ERR_SHORT;
+
+    uint32_t pid;
+    memcpy(&pid, buf, 4);
+    if (pid != CCIEF_B_PROTOCOL_ID)
+        return CCIEF_ERR_PID;
+
+    uint16_t declared_len;
+    memcpy(&declared_len, buf + 8, 2);
+    if ((size_t)(CCIEF_B_HDR_SIZE + declared_len) != recv_len)
+        return CCIEF_ERR_LEN;
+
+    uint16_t cmd;
+    memcpy(&cmd, buf + 10, 2);
+    if (cmd != 0x0730 && cmd != 0x0001 && cmd != 0x0002)
+        return CCIEF_ERR_CMD;
+
+    return CCIEF_OK;
+}
+</div>
+</div>
+
+<div class="warn-card">
+  <p><strong>Security note:</strong> In safety-relevant applications, treat all received UDP datagrams as untrusted. Validate length bounds before every array index. Fuzz your parser with AFL++ or libFuzzer before deploying to production hardware.</p>
+</div>
+
+<div class="exercise">
+  <div class="exercise-header"><span class="ex-badge lab">Lab 6.1</span>Fuzz testing the parser</div>
+  <div class="exercise-body">Compile your parser with AddressSanitizer (<code style="font-family:var(--font-mono);font-size:12px">-fsanitize=address,undefined</code>) and write a libFuzzer harness that feeds random bytes into <code style="font-family:var(--font-mono);font-size:12px">ccief_b_validate()</code> and <code style="font-family:var(--font-mono);font-size:12px">ccief_b_parse_header()</code>. Run for 10 minutes and report any crashes found.</div>
+</div>
+<div class="exercise">
+  <div class="exercise-header"><span class="ex-badge hw">Assignment 6</span>Watchdog integration</div>
+  <div class="exercise-body">Add a software watchdog: a background thread that expects the cyclic timer to "pet" it every 50 ms. If no pet arrives within 200 ms, the watchdog calls a registered reset callback. Simulate a deadlock by blocking the main thread and verify the watchdog fires.</div>
+</div>
+    `
+  },
+  {
+    id: 7,
+    title: "Diagnostics, Logging, and Monitoring",
+    subtitle: "Observability tools for live and post-mortem analysis",
+    duration: "3h",
+    tags: ["diagnostics", "logging", "Wireshark", "statistics"],
+    content: `
+<div class="section">
+  <div class="section-title">Learning objectives</div>
+  <ul class="objectives">
+    <li>Implement a ring-buffer packet logger that captures the last N frames</li>
+    <li>Expose per-slave statistics: RX count, TX count, timeout count, last error code</li>
+    <li>Write a Lua dissector for Wireshark to decode CCIEF-B frames in the GUI</li>
+    <li>Build a simple text-mode dashboard showing live slave status</li>
+    <li>Interpret common failure patterns from log traces</li>
+  </ul>
+</div>
+
+<div class="section">
+  <div class="section-title">Ring-buffer logger</div>
+  <div class="code-label">
+    <span>logger.c — circular frame capture</span>
+    <button class="copy-btn" onclick="copyCode(this)">copy</button>
+  </div>
+  <div class="code-block">#define LOG_CAPACITY  256
+#define MAX_FRAME_LEN 1024
+
+typedef struct {
+    struct timespec ts;
+    uint8_t         dir;         /* 'T'=tx, 'R'=rx */
+    uint16_t        len;
+    uint8_t         data[MAX_FRAME_LEN];
+} log_entry_t;
+
+typedef struct {
+    log_entry_t entries[LOG_CAPACITY];
+    unsigned    head;            /* next write position   */
+    unsigned    count;           /* total logged (wraps)  */
+} frame_log_t;
+
+void frame_log_push(frame_log_t *log, char dir,
+                    const uint8_t *data, uint16_t len) {
+    log_entry_t *e = &log->entries[log->head % LOG_CAPACITY];
+    clock_gettime(CLOCK_MONOTONIC, &e->ts);
+    e->dir = (uint8_t)dir;
+    e->len = len &lt; MAX_FRAME_LEN ? len : MAX_FRAME_LEN;
+    memcpy(e->data, data, e->len);
+    log->head = (log->head + 1) % LOG_CAPACITY;
+    log->count++;
+}
+</div>
+</div>
+
+<div class="section">
+  <div class="section-title">Wireshark Lua dissector skeleton</div>
+  <div class="code-label">
+    <span>ccief_b.lua — paste into Wireshark plugin folder</span>
+    <button class="copy-btn" onclick="copyCode(this)">copy</button>
+  </div>
+  <div class="code-block">local p = Proto("ccief_b", "CC-Link Field Basic")
+local f_pid  = ProtoField.uint32("ccief_b.pid",      "Protocol ID", base.HEX)
+local f_seq  = ProtoField.uint16("ccief_b.seq",      "Sequence No", base.DEC)
+local f_len  = ProtoField.uint16("ccief_b.dlen",     "Data Length", base.DEC)
+local f_cmd  = ProtoField.uint16("ccief_b.command",  "Command",     base.HEX)
+local f_sub  = ProtoField.uint16("ccief_b.subcmd",   "Sub-command", base.HEX)
+p.fields = { f_pid, f_seq, f_len, f_cmd, f_sub }
+
+function p.dissector(buf, pkt, tree)
+    if buf:len() &lt; 14 then return end
+    local t = tree:add(p, buf())
+    pkt.cols.protocol = "CCIEF-B"
+    t:add_le(f_pid, buf(0,4))
+    t:add_le(f_seq, buf(6,2))
+    t:add_le(f_len, buf(8,2))
+    t:add_le(f_cmd, buf(10,2))
+    t:add_le(f_sub, buf(12,2))
+end
+
+local udp_table = DissectorTable.get("udp.port")
+udp_table:add(61450, p)
+</div>
+</div>
+
+<div class="exercise">
+  <div class="exercise-header"><span class="ex-badge lab">Lab 7.1</span>Live dashboard</div>
+  <div class="exercise-body">Write a terminal dashboard using ANSI escape codes that refreshes every 500 ms showing: slave number, IP address, state, cycle count, timeout count, last RX byte 0, and last RWr word 0. Use <code style="font-family:var(--font-mono);font-size:12px">\033[H\033[J</code> to clear and redraw.</div>
+</div>
+<div class="exercise">
+  <div class="exercise-header"><span class="ex-badge hw">Assignment 7</span>Failure pattern analysis</div>
+  <div class="exercise-body">Capture a 5-minute log from your master-slave loopback. Introduce three fault scenarios: (1) packet loss, (2) duplicate packets, (3) out-of-order delivery using tc-netem. Analyze the logs and write a 1-page report identifying how each fault manifests in the diagnostics data.</div>
+</div>
+    `
+  },
+  {
+    id: 8,
+    title: "Capstone: Production-Ready CC-Link Slave",
+    subtitle: "Integration, testing, and deployment checklist",
+    duration: "6h",
+    tags: ["capstone", "integration", "RTOS", "certification"],
+    content: `
+<div class="section">
+  <div class="section-title">Learning objectives</div>
+  <ul class="objectives">
+    <li>Integrate all previous modules into a single, compilable slave library</li>
+    <li>Port the implementation to a bare-metal STM32 or Raspberry Pi target</li>
+    <li>Write a full integration test suite with >80% coverage</li>
+    <li>Complete the CLPA conformance self-checklist</li>
+    <li>Document the API for handoff to an application developer</li>
+  </ul>
+</div>
+
+<div class="section">
+  <div class="section-title">Library API surface</div>
+  <div class="code-label">
+    <span>ccief_slave.h — public API header</span>
+    <button class="copy-btn" onclick="copyCode(this)">copy</button>
+  </div>
+  <div class="code-block">/* ccief_slave.h — CC-Link Field Basic slave library
+ * License: MIT | Requires: C11, POSIX.1-2017             */
+#pragma once
+#include &lt;stdint.h&gt;
+#include &lt;stddef.h&gt;
+#include &lt;stdbool.h&gt;
+
+typedef struct ccief_slave ccief_slave_t;  /* opaque handle */
+
+typedef struct {
+    const char *bind_ip;       /* local interface IP string */
+    uint8_t     node_number;   /* 1 – 64                    */
+    uint32_t    cycle_ms;      /* expected cycle period      */
+    uint32_t    timeout_ms;    /* disconnect timeout         */
+    void (*on_connect)(void *user);
+    void (*on_disconnect)(void *user);
+    void *user_data;
+} ccief_slave_config_t;
+
+/* Lifecycle */
+ccief_slave_t *ccief_slave_create(const ccief_slave_config_t *cfg);
+void           ccief_slave_destroy(ccief_slave_t *s);
+int            ccief_slave_run(ccief_slave_t *s); /* blocks */
+void           ccief_slave_stop(ccief_slave_t *s);
+
+/* Process data access (thread-safe) */
+bool     ccief_slave_read_ry(ccief_slave_t *s, uint8_t bit_no);
+void     ccief_slave_write_rx(ccief_slave_t *s, uint8_t bit_no, bool val);
+uint16_t ccief_slave_read_rww(ccief_slave_t *s, uint8_t word_no);
+void     ccief_slave_write_rwr(ccief_slave_t *s, uint8_t word_no, uint16_t val);
+
+/* Diagnostics */
+uint32_t ccief_slave_get_cycle_count(const ccief_slave_t *s);
+uint32_t ccief_slave_get_timeout_count(const ccief_slave_t *s);
+</div>
+</div>
+
+<div class="section">
+  <div class="section-title">Conformance checklist</div>
+  <ul class="checklist" id="cl-8"></ul>
+</div>
+
+<div class="info-card">
+  <p><strong>Next steps after this course:</strong> Consider applying for official CLPA conformance testing if your product will be sold commercially. The self-checklist here covers the main protocol behaviors, but certified test houses run additional timing and interoperability tests against reference masters.</p>
+</div>
+
+<div class="exercise">
+  <div class="exercise-header"><span class="ex-badge lab">Lab 8.1</span>Integration test suite</div>
+  <div class="exercise-body">Write a test suite using a real or simulated master that exercises: normal cyclic exchange, slave disconnect and reconnect, invalid frame rejection, process data read/write through the full stack, and timing under load. Target >80% line coverage measured with gcov.</div>
+</div>
+<div class="exercise">
+  <div class="exercise-header"><span class="ex-badge hw">Final Project</span>Full slave library submission</div>
+  <div class="exercise-body">Submit your complete slave library with: source files, a CMakeLists.txt, Doxygen API documentation, a README with build and usage instructions, the test suite, and a coverage report. The library must compile cleanly on Linux with -Wall -Wextra -Werror and on an ARM Cortex-M4 target (STM32 HAL or bare-metal) with no modifications except the HAL layer.</div>
+</div>
+    `
+  }
+];
+
+const checklists = {
+  "cl-1": [
+    "Linux machine with GCC 9+ installed",
+    "Wireshark installed and capture permissions set",
+    "CLPA CC-Link Field Basic specification PDF obtained",
+    "Network interface configured for testing",
+    "C development environment ready"
+  ],
+  "cl-8": [
+    "Protocol ID validated on every received frame",
+    "Sequence number mirrored in all responses",
+    "Little-endian byte order used throughout",
+    "Slave disconnects after configured timeout",
+    "All four data types (RX/RY/RWr/RWw) implemented",
+    "Error code 0x0000 returned on normal operation",
+    "Frame length field matches actual data size",
+    "Unsolicited disconnect notification handled",
+    "No global mutable state (reentrant implementation)",
+    "API is thread-safe for process data access"
+  ]
+};
+
+let currentModule = 0;
+const completed = new Set();
+const checkStates = {};
+
+function renderNav() {
+  const bar = document.getElementById('nav-bar');
+  bar.innerHTML = modules.map((m, i) => `
+    <button class="nav-btn ${i === currentModule ? 'active' : ''} ${completed.has(i) ? 'done' : ''}"
+            onclick="goTo(${i})">
+      <span class="dot"></span>M${m.id}
+    </button>
+  `).join('');
+}
+
+function renderModule() {
+  const m = modules[currentModule];
+  const area = document.getElementById('content-area');
+  area.innerHTML = `
+    <div class="module-header">
+      <div class="module-num">${m.id}</div>
+      <div class="module-meta">
+        <div class="module-title">${m.title}</div>
+        <div class="module-subtitle">${m.subtitle}</div>
+        <div class="module-tags">${m.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+      </div>
+    </div>
+    ${m.content}
+  `;
+
+  // Render inline checklists
+  Object.keys(checklists).forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (!checkStates[id]) checkStates[id] = checklists[id].map(() => false);
+    el.innerHTML = checklists[id].map((item, i) => `
+      <li>
+        <div class="chk-box ${checkStates[id][i] ? 'checked' : ''}" onclick="toggleCheck('${id}', ${i})">
+          ${checkStates[id][i] ? '✓' : ''}
+        </div>
+        <span>${item}</span>
+      </li>
+    `).join('');
+  });
+
+  document.getElementById('footer-info').textContent =
+    `Module ${m.id} of ${modules.length} · ~${m.duration}`;
+  document.getElementById('btn-prev').disabled = currentModule === 0;
+  document.getElementById('btn-next').textContent =
+    currentModule === modules.length - 1 ? 'Complete program ✓' : 'Next module →';
+}
+
+function updateProgress() {
+  const pct = Math.round((completed.size / modules.length) * 100);
+  document.getElementById('pct').textContent = pct + '%';
+  document.getElementById('prog-bar').style.width = pct + '%';
+}
+
+function goTo(i) {
+  if (i !== currentModule) {
+    completed.add(currentModule);
+  }
+  currentModule = i;
+  renderNav();
+  renderModule();
+  updateProgress();
+}
+
+function navigate(dir) {
+  const next = currentModule + dir;
+  if (next < 0 || next > modules.length - 1) return;
+  completed.add(currentModule);
+  currentModule = next;
+  renderNav();
+  renderModule();
+  updateProgress();
+}
+
+function toggleCheck(id, i) {
+  if (!checkStates[id]) checkStates[id] = checklists[id].map(() => false);
+  checkStates[id][i] = !checkStates[id][i];
+  const items = document.querySelectorAll(`#${id} .chk-box`);
+  items[i].className = 'chk-box' + (checkStates[id][i] ? ' checked' : '');
+  items[i].textContent = checkStates[id][i] ? '✓' : '';
+}
+
+function copyCode(btn) {
+  const block = btn.closest('.section').querySelector('.code-block');
+  navigator.clipboard.writeText(block.textContent.trim()).then(() => {
+    btn.textContent = 'copied!';
+    setTimeout(() => btn.textContent = 'copy', 1500);
+  });
+}
+
+renderNav();
+renderModule();
+updateProgress();
+</script>
